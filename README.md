@@ -14,4 +14,5 @@ AI was used for:
 - Attempted to find solutions for the problem that, in the current implementation, makes it impossible to grab a card when another card is stacked on top of it.
 
 What I would change:
-In the current implementation it is impossible to move stacks of cards, which is really frustrating.
+- In the current implementation it is impossible to move stacks of cards, which is really frustrating;
+- The code style, curent implementation is quite messy IMHO.
