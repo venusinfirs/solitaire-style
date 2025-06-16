@@ -6,16 +6,15 @@ using UnityEngine;
 [RequireComponent(typeof(BoxCollider2D))]
 public class SolitaireCard2D : MonoBehaviour
 {
-    public Vector3 InitialPosition { get; private set; }
-    public SolitaireCard2D CurrentHigherCard { get; private set; }
-    
-    public SolitaireCard2D PreviousHigherCard { get; private set; }
+    public Vector3 InitialPosition { get; set; }
+    public SolitaireCard2D CurrentHigherCard { get; set; }
+    public SolitaireCard2D PreviousHigherCard { get; set; }
 
     public Stack<SolitaireCard2D> LoverCards = new Stack<SolitaireCard2D>();
     public string Suit { get; private set; }
     public int Rank { get; private set; }
 
-    public Vector3 glueOffset = new Vector3(0, -0.5f, 0); // Local offset for snapping
+    public float glueOffset =  -0.5f; // Local offset for snapping
     
     private bool isDragging = false;
     private Vector3 offset;
@@ -65,6 +64,7 @@ public class SolitaireCard2D : MonoBehaviour
 
         isDragging = true;
         offset = transform.position - GetMouseWorldPosition();
+        
     }
 
     private void OnMouseDrag()
@@ -94,7 +94,7 @@ public class SolitaireCard2D : MonoBehaviour
         SolitaireCard2D otherCard = other.GetComponent<SolitaireCard2D>();
         if (otherCard != null && otherCard != this && otherCard.Rank > Rank)
         {
-            transform.position = otherCard.transform.position + glueOffset;
+            transform.position = new Vector3(otherCard.transform.position.x, otherCard.transform.position.y + glueOffset);
            
             OnCardPlaced?.Invoke(new LastMoveData()
             {

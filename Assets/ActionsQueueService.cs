@@ -48,11 +48,12 @@ namespace DefaultNamespace
                 {
                     if (lastMove.PreviousHigherCard != null)
                     {
-                        card.transform.position = card.PreviousHigherCard.transform.position + card.glueOffset;
+                        card.transform.position = new Vector3(lastMove.PreviousHigherCard.transform.position.x, lastMove.PreviousHigherCard.transform.position.y + card.glueOffset);
                     }
                     else
                     {
                         card.transform.position = lastMove.InitialPosition;
+                        card.CurrentHigherCard = null;
                     }
                 }
             }
