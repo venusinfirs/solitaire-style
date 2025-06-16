@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -78,6 +79,11 @@ public class SolitaireCard2D : MonoBehaviour
     private void OnMouseUp()
     {
         isDragging = false;
+        
+        if (CurrentHigherCard == null) return;
+        
+        transform.position =
+            new Vector3(CurrentHigherCard.transform.position.x, CurrentHigherCard.transform.position.y + glueOffset);
     }
 
     private Vector3 GetMouseWorldPosition()
@@ -86,7 +92,7 @@ public class SolitaireCard2D : MonoBehaviour
         mouseScreen.z = 10f; // You can adjust this if needed
         return Camera.main.ScreenToWorldPoint(mouseScreen);
     }
-    
+
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (!isDragging) return;
@@ -94,8 +100,6 @@ public class SolitaireCard2D : MonoBehaviour
         SolitaireCard2D otherCard = other.GetComponent<SolitaireCard2D>();
         if (otherCard != null && otherCard != this && otherCard.Rank > Rank)
         {
-            transform.position = new Vector3(otherCard.transform.position.x, otherCard.transform.position.y + glueOffset);
-           
             OnCardPlaced?.Invoke(new LastMoveData()
             {
                 LastDraggedCard = this,
@@ -103,7 +107,7 @@ public class SolitaireCard2D : MonoBehaviour
                 InitialPosition = InitialPosition,
                 CurrentHigherCard = otherCard
             });
-            
+
             PreviousHigherCard = CurrentHigherCard;
             CurrentHigherCard = otherCard;
         }
