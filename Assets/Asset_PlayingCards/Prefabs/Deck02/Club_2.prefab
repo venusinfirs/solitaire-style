@@ -172,7 +172,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7006777460147403819}
   m_Layer: 0
-  m_Name: Deck02_Club_2
+  m_Name: Club_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
