@@ -5,7 +5,7 @@ using UnityEngine;
 [RequireComponent(typeof(BoxCollider2D))]
 public class SolitaireCard2D : MonoBehaviour
 {
-    public BoxCollider2D EmptySlotPosition { get; private set; }
+    public Vector3 PreviousPosition { get; private set; }
     public SolitaireCard2D HigherCard { get; private set; }
 
     public Stack<SolitaireCard2D> LoverCards = new Stack<SolitaireCard2D>();
@@ -89,7 +89,7 @@ public class SolitaireCard2D : MonoBehaviour
         mouseScreen.z = 10f; // You can adjust this if needed
         return Camera.main.ScreenToWorldPoint(mouseScreen);
     }
-
+    
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (!isDragging) return;
