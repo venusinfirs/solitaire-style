@@ -1,19 +1,25 @@
 using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(BoxCollider2D))]
-public class SolitaireCard : MonoBehaviour
+public class SolitaireCard2D : MonoBehaviour
 {
     public string Suit { get; private set; }
     public int Rank { get; private set; }
 
+    public Vector3 glueOffset = new Vector3(0, -0.3f, 0); // Local offset for snapping
+
     private bool isDragging = false;
     private Vector3 offset;
 
-    // The glue offset when snapping to a higher card
-    public Vector3 glueOffset = new Vector3(0, -0.3f, 0); // Adjust as needed
+    private Rigidbody2D rb;
 
-    private void Start()
+    private void Awake()
     {
+        rb = GetComponent<Rigidbody2D>();
+        rb.gravityScale = 0;
+        rb.bodyType = RigidbodyType2D.Kinematic;
+
         ParseCardName();
     }
 
@@ -23,13 +29,13 @@ public class SolitaireCard : MonoBehaviour
         if (parts.Length == 2)
         {
             Suit = parts[0];
-            if (!int.TryParse(parts[1], out int rank))
+            if (!int.TryParse(parts[1], out int parsedRank))
             {
                 Debug.LogWarning($"Invalid rank in card name: {name}");
             }
             else
             {
-                Rank = rank;
+                Rank = parsedRank;
             }
         }
         else
@@ -48,7 +54,7 @@ public class SolitaireCard : MonoBehaviour
     {
         if (isDragging)
         {
-            transform.position = GetMouseWorldPosition() + offset;
+            rb.MovePosition(GetMouseWorldPosition() + offset);
         }
     }
 
@@ -60,18 +66,19 @@ public class SolitaireCard : MonoBehaviour
     private Vector3 GetMouseWorldPosition()
     {
         Vector3 mouseScreen = Input.mousePosition;
-        mouseScreen.z = Camera.main.WorldToScreenPoint(transform.position).z;
+        mouseScreen.z = 10f; // You can adjust this if needed
         return Camera.main.ScreenToWorldPoint(mouseScreen);
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter2D(Collider2D other)
     {
-        SolitaireCard otherCard = other.GetComponent<SolitaireCard>();
-        if (otherCard != null && otherCard.Rank > this.Rank)
+        if (!isDragging) return;
+
+        SolitaireCard2D otherCard = other.GetComponent<SolitaireCard2D>();
+        if (otherCard != null && otherCard != this && otherCard.Rank > this.Rank)
         {
-            Vector3 targetPos = otherCard.transform.position + glueOffset;
-            transform.position = targetPos;
-            transform.SetParent(otherCard.transform); // Optional: parent for hierarchy
+            transform.position = otherCard.transform.position + glueOffset;
+            transform.SetParent(otherCard.transform); // Optional parenting
         }
     }
 }
