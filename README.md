@@ -15,4 +15,4 @@ AI was used for:
 
 What I would change:
 - In the current implementation it is impossible to move stacks of cards, which is really frustrating;
-- The code style, curent implementation is quite messy IMHO.
+- The code style in curent implementation is quite messy IMHO.
