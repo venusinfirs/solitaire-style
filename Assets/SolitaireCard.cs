@@ -12,6 +12,7 @@ public class SolitaireCard2D : MonoBehaviour
     public SolitaireCard2D PreviousHigherCard { get; set; }
 
     public Stack<SolitaireCard2D> LoverCards = new Stack<SolitaireCard2D>();
+    
     public string Suit { get; private set; }
     public int Rank { get; private set; }
 
@@ -82,8 +83,8 @@ public class SolitaireCard2D : MonoBehaviour
         
         if (CurrentHigherCard == null) return;
         
-        transform.position =
-            new Vector3(CurrentHigherCard.transform.position.x, CurrentHigherCard.transform.position.y + glueOffset);
+        transform.position = new Vector3(CurrentHigherCard.transform.position.x,
+            CurrentHigherCard.transform.position.y + glueOffset);
     }
 
     private Vector3 GetMouseWorldPosition()
@@ -95,10 +96,8 @@ public class SolitaireCard2D : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (!isDragging) return;
-
         SolitaireCard2D otherCard = other.GetComponent<SolitaireCard2D>();
-        if (otherCard != null && otherCard != this && otherCard.Rank > Rank)
+        if (otherCard != null && otherCard != this && otherCard.Rank == Rank + 1)
         {
             OnCardPlaced?.Invoke(new LastMoveData()
             {
