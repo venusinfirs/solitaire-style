@@ -86,12 +86,7 @@ public class SolitaireCard2D : MonoBehaviour
         mouseScreen.z = 10f; // You can adjust this if needed
         return Camera.main.ScreenToWorldPoint(mouseScreen);
     }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        PreviousHigherCard = CurrentHigherCard;
-    }
-
+    
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (!isDragging) return;
@@ -100,14 +95,17 @@ public class SolitaireCard2D : MonoBehaviour
         if (otherCard != null && otherCard != this && otherCard.Rank > Rank)
         {
             transform.position = otherCard.transform.position + glueOffset;
-            CurrentHigherCard = otherCard;
-            
+           
             OnCardPlaced?.Invoke(new LastMoveData()
             {
                 LastDraggedCard = this,
-                PreviousHigherCard = PreviousHigherCard,
-                InitialPosition = InitialPosition
+                PreviousHigherCard = CurrentHigherCard,
+                InitialPosition = InitialPosition,
+                CurrentHigherCard = otherCard
             });
+            
+            PreviousHigherCard = CurrentHigherCard;
+            CurrentHigherCard = otherCard;
         }
     }
 }

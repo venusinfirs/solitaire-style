@@ -38,13 +38,15 @@ namespace DefaultNamespace
 
         private void UndoLastAction()
         {
+            if (ActionsQueue.Count == 0) return;
+            
             var lastMove = ActionsQueue.Pop();
             
             foreach (var card in _cards)
             {
                 if (card.Rank == lastMove.LastDraggedCard.Rank && card.Suit == lastMove.LastDraggedCard.Suit)
                 {
-                    if (card.PreviousHigherCard != null)
+                    if (lastMove.PreviousHigherCard != null)
                     {
                         card.transform.position = card.PreviousHigherCard.transform.position + card.glueOffset;
                     }
@@ -63,5 +65,6 @@ public class LastMoveData
 {
     public SolitaireCard2D LastDraggedCard;
     public SolitaireCard2D PreviousHigherCard;
+    public SolitaireCard2D CurrentHigherCard;
     public Vector3 InitialPosition;
 }
