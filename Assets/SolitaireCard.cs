@@ -18,16 +18,7 @@ public class SolitaireCard2D : MonoBehaviour
     private Vector3 offset;
 
     private Rigidbody2D rb;
-    
-    public void SetLoverCard(SolitaireCard2D loverCard)
-    {
-        LoverCards.Push(loverCard);
-    }
-    
-    public void RemoveLoverCard()
-    {
-        LoverCards.Pop();
-    }
+
     
     private void Awake()
     {
@@ -36,6 +27,8 @@ public class SolitaireCard2D : MonoBehaviour
         rb.bodyType = RigidbodyType2D.Kinematic;
         
         ParseCardName();
+        
+        PreviousPosition = transform.position;
     }
 
     private void ParseCardName()

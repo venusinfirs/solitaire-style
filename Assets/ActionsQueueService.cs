@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using DefaultNamespace;
 using UnityEngine;
 using UnityEngine.UI;
@@ -9,6 +10,8 @@ namespace DefaultNamespace
     {
         public Stack<LastMoveData> ActionsQueue = new Stack<LastMoveData>();
         public Button _undoButton;
+
+        private List<SolitaireCard2D> _cards = new List<SolitaireCard2D>();
         
         void Start()
         {
@@ -18,15 +21,27 @@ namespace DefaultNamespace
                 return;
             }
         
+            _cards = FindObjectsOfType<SolitaireCard2D>().ToList();
+
+            foreach (var card in _cards)
+            {
+               ActionsQueue.Push(new LastMoveData()
+               {
+                   LastDraggedCard = card,
+                   PreviousHigherCard = card.HigherCard,
+                   PreviousPosition = card.transform.position
+               });
+            }
+
             _undoButton.onClick.AddListener(UndoLastAction);
         }
         
-        public void SetLastMove(SolitaireCard2D card, SolitaireCard2D peviousHigherCard, Vector3 previousPos)
+        public void SetLastMove(SolitaireCard2D card, SolitaireCard2D previousHigherCard = null, Vector3 previousPos = default)
         {
             ActionsQueue.Push(new LastMoveData()
             {
                 LastDraggedCard = card,
-                PreviousHigherCard = peviousHigherCard,
+                PreviousHigherCard = previousHigherCard,
                 PreviousPosition = previousPos
             });
         }
@@ -35,13 +50,11 @@ namespace DefaultNamespace
         {
             var lastMove = ActionsQueue.Pop();
             
-            var cardsOnScene = FindObjectsOfType<SolitaireCard2D>();
-            
-            foreach (var card in cardsOnScene)
+            foreach (var card in _cards)
             {
                 if (card.Rank == lastMove.LastDraggedCard.Rank && card.Suit == lastMove.LastDraggedCard.Suit)
                 {
-                   
+                   card.transform.position = lastMove.PreviousPosition;
                 }
             }
         }
