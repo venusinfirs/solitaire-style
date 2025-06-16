@@ -25,25 +25,15 @@ namespace DefaultNamespace
 
             foreach (var card in _cards)
             {
-               ActionsQueue.Push(new LastMoveData()
-               {
-                   LastDraggedCard = card,
-                   PreviousHigherCard = card.HigherCard,
-                   PreviousPosition = card.transform.position
-               });
+               card.OnCardPlaced += SetLastMove;
             }
 
             _undoButton.onClick.AddListener(UndoLastAction);
         }
         
-        public void SetLastMove(SolitaireCard2D card, SolitaireCard2D previousHigherCard = null, Vector3 previousPos = default)
+        public void SetLastMove(LastMoveData lastMove)
         {
-            ActionsQueue.Push(new LastMoveData()
-            {
-                LastDraggedCard = card,
-                PreviousHigherCard = previousHigherCard,
-                PreviousPosition = previousPos
-            });
+            ActionsQueue.Push(lastMove);
         }
 
         private void UndoLastAction()
@@ -54,7 +44,14 @@ namespace DefaultNamespace
             {
                 if (card.Rank == lastMove.LastDraggedCard.Rank && card.Suit == lastMove.LastDraggedCard.Suit)
                 {
-                   card.transform.position = lastMove.PreviousPosition;
+                    if (card.PreviousHigherCard != null)
+                    {
+                        card.transform.position = card.PreviousHigherCard.transform.position + card.glueOffset;
+                    }
+                    else
+                    {
+                        card.transform.position = lastMove.InitialPosition;
+                    }
                 }
             }
         }
@@ -66,5 +63,5 @@ public class LastMoveData
 {
     public SolitaireCard2D LastDraggedCard;
     public SolitaireCard2D PreviousHigherCard;
-    public Vector3 PreviousPosition;
+    public Vector3 InitialPosition;
 }

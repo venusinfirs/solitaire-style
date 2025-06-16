@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -5,8 +6,10 @@ using UnityEngine;
 [RequireComponent(typeof(BoxCollider2D))]
 public class SolitaireCard2D : MonoBehaviour
 {
-    public Vector3 PreviousPosition { get; private set; }
-    public SolitaireCard2D HigherCard { get; private set; }
+    public Vector3 InitialPosition { get; private set; }
+    public SolitaireCard2D CurrentHigherCard { get; private set; }
+    
+    public SolitaireCard2D PreviousHigherCard { get; private set; }
 
     public Stack<SolitaireCard2D> LoverCards = new Stack<SolitaireCard2D>();
     public string Suit { get; private set; }
@@ -19,6 +22,7 @@ public class SolitaireCard2D : MonoBehaviour
 
     private Rigidbody2D rb;
 
+    public event Action<LastMoveData> OnCardPlaced;
     
     private void Awake()
     {
@@ -28,7 +32,7 @@ public class SolitaireCard2D : MonoBehaviour
         
         ParseCardName();
         
-        PreviousPosition = transform.position;
+        InitialPosition = transform.position;
     }
 
     private void ParseCardName()
@@ -54,7 +58,7 @@ public class SolitaireCard2D : MonoBehaviour
 
     private void OnMouseDown()
     {
-        if (HigherCard != null && HigherCard.LoverCards.Count > 0)
+        if (CurrentHigherCard != null && CurrentHigherCard.LoverCards.Count > 0)
         {
             return;
         }
@@ -82,7 +86,12 @@ public class SolitaireCard2D : MonoBehaviour
         mouseScreen.z = 10f; // You can adjust this if needed
         return Camera.main.ScreenToWorldPoint(mouseScreen);
     }
-    
+
+    private void OnTriggerEnter(Collider other)
+    {
+        PreviousHigherCard = CurrentHigherCard;
+    }
+
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (!isDragging) return;
@@ -91,7 +100,14 @@ public class SolitaireCard2D : MonoBehaviour
         if (otherCard != null && otherCard != this && otherCard.Rank > Rank)
         {
             transform.position = otherCard.transform.position + glueOffset;
-            HigherCard = otherCard;
+            CurrentHigherCard = otherCard;
+            
+            OnCardPlaced?.Invoke(new LastMoveData()
+            {
+                LastDraggedCard = this,
+                PreviousHigherCard = PreviousHigherCard,
+                InitialPosition = InitialPosition
+            });
         }
     }
 }
