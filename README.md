@@ -10,6 +10,7 @@ AI was used for:
 
 - A Python script to rename Unity Asset Store assets;
 - The basic logic of SolitaireCard2D (everything related to drag-and-drop and parcing prefab name to get card rank and suit);
+- Researched what settings should I use for solitaire card component in order for triggers to work correctly;
 - Attempted to find solutions for the problem that, in the current implementation, makes it impossible to grab a card when another card is stacked on top of it.
 
 What I would change:
